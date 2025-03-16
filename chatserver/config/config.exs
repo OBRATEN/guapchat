@@ -20,7 +20,8 @@ config :chatserver, ChatserverWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Chatserver.PubSub,
-  live_view: [signing_salt: "LJ4dtWu1"]
+  live_view: [signing_salt: "LJ4dtWu1"],
+  joken_secret: "7ZE1WwGzTNGcAX5RG3SfGkTf2QT/mFUIuUzWyySXnyYJ0ypv0g3ySLJmLY3Iq96+"
 
 # Configures the mailer
 #

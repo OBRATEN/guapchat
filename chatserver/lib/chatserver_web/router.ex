@@ -11,6 +11,8 @@ defmodule ChatserverWeb.Router do
     delete "/users", UserController, :delete
     get "/messages", MessageController, :index
     post "/messages", MessageController, :create
+    post "/login", AuthController, :login
+    post "/register", AuthController, :register
   end
   if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router

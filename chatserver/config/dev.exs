@@ -85,3 +85,5 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :joken, default_signer: "7ZE1WwGzTNGcAX5RG3SfGkTf2QT/mFUIuUzWyySXnyYJ0ypv0g3ySLJmLY3Iq96+"
