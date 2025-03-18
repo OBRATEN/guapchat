@@ -13,6 +13,7 @@ defmodule ChatserverWeb.Router do
     post "/messages", MessageController, :create
     post "/login", AuthController, :login
     post "/register", AuthController, :register
+    post "/refresh", AuthController, :refresh
   end
   if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router

@@ -34,6 +34,10 @@ defmodule Chatserver.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by_id(id) do
+    Repo.get(User, id)  # Assuming you have Repo defined.  Adjust as needed.
+  end
+
   @doc """
   Creates a user.
 

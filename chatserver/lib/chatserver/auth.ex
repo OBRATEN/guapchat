@@ -64,12 +64,13 @@ defmodule Chatserver.Auth do
   end
 
   def verify_token(token) do
-    joken_config =
-      Joken.Config.new()
-      |> Joken.Config.alg(@access_signing_alg, @secret) # Убедитесь, что signing_alg совпадает с тем, который использовался при генерации токена.
-      |> Joken.Config.iss(@issuer)
+    joken_options = %{
+      alg: @refresh_signing_alg,
+      secret: @secret,
+      iss: @issuer,
+    }
 
-    case Joken.verify(token, joken_config) do
+    case Joken.verify_and_validate(joken_options, token) do
       {:ok, claims} ->
         {:ok, claims}
 
@@ -80,13 +81,13 @@ defmodule Chatserver.Auth do
   end
 
   def verify_access_token(token) do
-    verify_token(token) #  В данном примере verify_token используется как универсальная функция.
+    verify_token(token)
   end
 
   def verify_refresh_token(token) do
     joken_config =
       Joken.Config.new()
-      |> Joken.Config.alg(@refresh_signing_alg, @secret) # Важно: Используем alg Refresh токена.
+      |> Joken.Config.alg(@refresh_signing_alg, @secret)
       |> Joken.Config.iss(@issuer)
 
     case Joken.verify(token, joken_config) do

@@ -9,9 +9,51 @@ defmodule ChatserverWeb.AuthController do
 
   @users %{"test" => "password"}
 
+  def refresh(conn, %{"token" => refresh_token}) do
+    case Auth.verify_token(refresh_token) do
+      {:ok, payload} ->
+        user_id = Map.get(payload, "user_id")
+
+        claims = %{
+          "user_id" => user_id
+        }
+
+        case Auth.generate_tokens(claims) do
+          %{status: :ok, tokens: {access_token, refresh_token}} ->
+            response = %{
+              "access_token" => access_token,
+              "refresh_token" => refresh_token,
+              "token_type" => "bearer",
+              "user" => %{
+                "id" => user_id,
+                "username" => Accounts.get_user_by_id(user_id).username
+              }
+            }
+
+            conn
+            |> put_status(:ok)
+            |> put_resp_header("content-type", "application/json")
+            |> send_resp(200, Jason.encode!(response))
+
+          %{status: :error, error: reason} ->
+            conn
+            |> put_status(:internal_server_error)
+            |> put_resp_header("content-type", "application/json")
+            |> send_resp(500, Jason.encode!(%{errors: [reason]}))
+        end
+
+      {:error, _reason} ->
+        conn
+            |> put_status(401)
+            |> put_resp_header("content-type", "text/plain")
+            |> send_resp(401, "Wrong Refresh Token")
+            |> halt()
+    end
+  end
+
   def login(conn, %{"user" => user_params}) do
     username = Map.get(user_params, "username")
-  password = Map.get(user_params, "password")
+    password = Map.get(user_params, "password")
     IO.inspect(username, label: "username")
 
     case Accounts.get_user_by_username(username) do
@@ -40,6 +82,7 @@ defmodule ChatserverWeb.AuthController do
                     "username" => user.username
                   }
                 }
+
                 conn
                 |> put_status(200)
                 |> put_resp_header("content-type", "application/json")

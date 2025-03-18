@@ -1,61 +1,34 @@
 defmodule ChatserverWeb.UserSocket do
   use Phoenix.Socket
   alias Chatserver.Auth
+  alias Chatserver.Accounts.User
+  alias Chatserver.Accounts
   require Logger
-
-  # A Socket handler
-  #
-  # It's possible to control the websocket connection and
-  # assign values that can be accessed by your channel topics.
-
-  ## Channels
 
   channel "chat_room:*", ChatserverWeb.ChatRoomChannel
 
-  # Socket params are passed from the client and can
-  # be used to verify and authenticate a user. After
-  # verification, you can put default assigns into
-  # the socket that will be set for all channels, ie
-  #
-  #     {:ok, assign(socket, :user_id, verified_user_id)}
-  #
-  # To deny connection, return `:error` or `{:error, term}`. To control the
-  # response the client receives in that case, [define an error handler in the
-  # websocket
-  # configuration](https://hexdocs.pm/phoenix/Phoenix.Endpoint.html#socket/3-websocket-configuration).
-  #
-  # See `Phoenix.Token` documentation for examples in
-  # performing token verification on connect.
-  @impl true
-  def connect(params, socket, _connect_info) do
-    case params["token"] do
-      nil ->
-        Logger.warn("No token provided")
-        :error
+  def connect(%{"token" => token}, socket) do
+    case Auth.verify_token(token) do
+      {:ok, payload} ->
+        user_id = Map.get(payload, "user_id")
+        Logger.info(user_id)
 
-      token ->
-        case Auth.verify_token(token) do
-          {:ok, user_id} ->
-            Logger.info("User connected with ID: #{user_id}")
-            {:ok, assign(socket, :user_id, user_id)}
+        case Accounts.get_user_by_id(user_id) do
+          %User{} = user ->
+            # Assign the user to the socket for later use in channels
+            {:ok, assign(socket, :current_user, user)}
 
-          {:error, reason} ->
-            Logger.warn("Invalid token: #{reason}")
-            :error
+          nil ->
+            {:error, :unauthorized} # User not found
         end
+
+      {:error, _} ->
+        {:error, :unauthorized} # Invalid token
     end
   end
 
-  # Socket IDs are topics that allow you to identify all sockets for a given user:
-  #
-  #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"
-  #
-  # Would allow you to broadcast a "disconnect" event and terminate
-  # all active sockets and channels for a given user:
-  #
-  #     Elixir.ChatserverWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
-  #
-  # Returning `nil` makes this socket anonymous.
+  def connect(_params, _socket), do: {:error, :unauthorized}
+
   @impl true
   def id(_socket), do: nil
 end
