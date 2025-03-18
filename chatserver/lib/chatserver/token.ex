@@ -1,4 +1,4 @@
-# lib/Chatserver/token.ex
+# lib/chatserver/token.ex
 defmodule Chatserver.Token do
-  use Joken.Config
+  alias Joken.Config
 end

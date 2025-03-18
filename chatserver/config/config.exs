@@ -21,7 +21,10 @@ config :chatserver, ChatserverWeb.Endpoint,
   ],
   pubsub_server: Chatserver.PubSub,
   live_view: [signing_salt: "LJ4dtWu1"],
-  joken_secret: "7ZE1WwGzTNGcAX5RG3SfGkTf2QT/mFUIuUzWyySXnyYJ0ypv0g3ySLJmLY3Iq96+"
+  jwt_issuer: "GuapChat",
+  jwt_secret: "7ZE1WwGzTNGcAX5RG3SfGkTf2QT/mFUIuUzWyySXnyYJ0ypv0g3ySLJmLY3Iq96+",
+  jwt_access_expires_in: "15m",   # 15 минут
+  jwt_refresh_expires_in: "7d"    # 7 дней
 
 # Configures the mailer
 #

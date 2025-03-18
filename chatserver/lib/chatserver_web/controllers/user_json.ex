@@ -20,9 +20,6 @@ defmodule ChatserverWeb.UserJSON do
       id: user.id,
       username: user.username,
       password: user.password,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      is_online: user.is_online
     }
   end
 end

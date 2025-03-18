@@ -1,12 +1,9 @@
 defmodule Chatserver.Accounts do
-  @moduledoc """
-  The Accounts context.
-  """
-
+  alias Bcrypt, as: Bcrypt
   import Ecto.Query, warn: false
   alias Chatserver.Repo
-
   alias Chatserver.Accounts.User
+  require Logger
 
   @doc """
   Returns the list of users.
@@ -50,10 +47,22 @@ defmodule Chatserver.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    changeset = %User{}
+      |> User.changeset(attrs)
+      |> hash_password()
+    case Repo.insert(changeset) do
+      {:ok, user} -> {:ok, user}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
+
+  defp hash_password(%{valid?: true, changes: %{password: password}} = changeset) do
+     password_hash = Bcrypt.hash_pwd_salt(password)
+     Ecto.Changeset.put_change(changeset, :password_hash, password_hash)
+  end
+
+  defp hash_password(changeset), do:  Ecto.Changeset.add_error(changeset, :password, "invalid password")
+
 
   @doc """
   Updates a user.
@@ -100,5 +109,44 @@ defmodule Chatserver.Accounts do
   """
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
+  end
+
+  def authenticate_user(userid, password) do
+    user = Repo.get_by(User, email: userid)
+
+    case user do
+      nil ->
+        {:error, :invalid_credentials}
+
+      user ->
+        if Bycrypt.verify_pwd(password, user.password_hash) do
+          {:ok, user}
+        else
+          {:error, :invalid_credentials}
+        end
+    end
+  end
+
+  def check_password(username, password) do
+    user = get_user_by_username(username)
+    if Bcrypt.verify_pass(password, user.password_hash) do
+      {:ok}
+    else
+      {:error}
+    end
+  end
+
+  def get_user_id_by_username(username) do
+    User
+    |> where([u], u.username == ^username)
+    |> Repo.one()
+    |> case do
+      nil -> {:error, :not_found}
+      user -> {:ok, user.id}
+    end
+  end
+
+  def get_user_by_username(username) do
+    Repo.get_by(User, username: username)
   end
 end

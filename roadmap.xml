@@ -1,0 +1,58 @@
+REGISTER
+POST http://31.129.105.229:4444/api/register
+No-Authorization
+Content-Type: Application-JSON
+JSON BODY:
+{
+    "user": {
+        "username": "<username>",
+        "password": "<password>",
+        "firstname": "<firstname>",
+        "lastname": "<lastname>"
+    }
+}
+Response:
+OK, Refresh JWT-Token
+
+LOGIN
+POST http://31.129.105.229:4444/api/login
+No-Authorization
+Content-Type: Application-JSON
+JSON BODY:
+{
+    "user": {
+        "username": "<username>",
+        "password": "<password>",
+    }
+}
+Response:
+OK, Refresh JWT-Token
+
+REFRESH TOKEN
+POST http://31.129.105.229:4444/api/refresh
+Authorization: Bearer Token, Refresh JWT-Token
+No-Body
+Response:
+OK, Access JWT-Token
+
+SOCKET CONNECTION
+WS ws://31.129.105.229:4444/socket/websocket
+Params: token, Access JWT-Token
+Response:
+OK, Connected to WS
+
+WS TOPICS:
+TOPIC chat_room:<chatid>
+Params: token, Access JWT-Token
+Body:
+{"topic":"chat_room:<chatid>","event":"phx_join","payload":{},"ref":<ref>}
+
+TOPIC chat_room:<chatid>
+Params: token, Access JWT-Token
+Body:
+{"topic":"chat_room:<chatid>","event":"new_msg","payload":{"body": "<message>"},"ref":<ref>}
+
+TOPIC info:<user>
+Params: token, Access JWT-Token
+Body:
+{"topic":"info:<user>","event":"to_dialogue","payload":{"body": {"<user1>", "<user2>"}},"ref":<ref>}

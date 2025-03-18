@@ -1,6 +1,7 @@
 defmodule ChatserverWeb.UserSocket do
   use Phoenix.Socket
   alias Chatserver.Auth
+  require Logger
 
   # A Socket handler
   #
@@ -33,7 +34,7 @@ defmodule ChatserverWeb.UserSocket do
         :error
 
       token ->
-        case Auth.validate_token(token) do
+        case Auth.verify_token(token) do
           {:ok, user_id} ->
             Logger.info("User connected with ID: #{user_id}")
             {:ok, assign(socket, :user_id, user_id)}

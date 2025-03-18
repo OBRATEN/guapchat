@@ -4,18 +4,18 @@ defmodule Chatserver.Accounts.User do
 
   schema "users" do
     field :username, :string
-    field :password, :string
+    field :password, :string, virtual: true
+    field :password_hash, :string
     field :firstname, :string
     field :lastname, :string
-    field :is_online, :boolean, default: false
-
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :password, :firstname, :lastname, :is_online])
-    |> validate_required([:username, :password, :firstname, :lastname, :is_online])
+    |> cast(attrs, [:username, :password, :firstname, :lastname])
+    |> validate_required([:username, :password])
+    |> validate_length(:password, min: 6)
+    |> unique_constraint(:username)
   end
 end

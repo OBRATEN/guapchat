@@ -1,4 +1,4 @@
-defmodule Chatserver.Repo.Migrations.CreateUsers do
+defmodule Chatserver.Repo.Migrations.UsersPasshash do
   use Ecto.Migration
 
   def change do
