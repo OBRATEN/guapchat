@@ -20,7 +20,8 @@ config :chatserver, Chatserver.Repo,
 config :chatserver, ChatserverWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "hJxLCXKkDUd7xYuoGTjFNNeSKAoSHcdR/R0a38r82/T1/jkVpNls9GpElm5sYr60",
-  server: false
+  server: false,
+  pubsub_server: Chatserver.PubSub
 
 # In test we don't send emails
 config :chatserver, Chatserver.Mailer, adapter: Swoosh.Adapters.Test

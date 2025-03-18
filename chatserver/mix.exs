@@ -59,6 +59,7 @@ defmodule Chatserver.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:joken, "~> 2.6.2"},
+      {:phoenix_pubsub, "~> 2.1.3"},
       {:bcrypt_elixir, "~> 3.1"}
     ]
   end

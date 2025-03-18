@@ -9,7 +9,8 @@ import Config
 
 config :chatserver,
   ecto_repos: [Chatserver.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  pubsub_server: Chatserver.PubSub
 
 # Configures the endpoint
 config :chatserver, ChatserverWeb.Endpoint,
