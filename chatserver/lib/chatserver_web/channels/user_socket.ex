@@ -5,7 +5,7 @@ defmodule ChatserverWeb.UserSocket do
   alias Chatserver.Accounts
   require Logger
 
-  channel "dialogue:*", ChatserverWeb.MainChannel
+  channel "dialogue:*", ChatserverWeb.DialogueChannel
   channel "main", ChatserverWeb.MainChannel
 
   def connect(%{"token" => token}, socket) do

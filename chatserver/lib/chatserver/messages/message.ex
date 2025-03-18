@@ -3,9 +3,10 @@ defmodule Chatserver.Messages.Message do
   import Ecto.Changeset
 
   schema "messages" do
+    field :dialogue_id, :integer
     field :sender_id, :integer
-    field :receiver_id, :integer
     field :content, :string
+    field :is_read, :boolean, default: false
 
     timestamps(type: :utc_datetime)
   end
@@ -13,7 +14,7 @@ defmodule Chatserver.Messages.Message do
   @doc false
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:sender_id, :receiver_id, :content])
-    |> validate_required([:sender_id, :receiver_id, :content])
+    |> cast(attrs, [:dialogue_id, :sender_id, :content])
+    |> validate_required([:dialogue_id, :sender_id, :content])
   end
 end

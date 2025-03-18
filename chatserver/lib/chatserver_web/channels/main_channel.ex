@@ -3,11 +3,8 @@ defmodule ChatserverWeb.MainChannel do
   alias Chatserver.Dialogue.Dialogue
   alias Chatserver.Accounts
   alias Chatserver.Dialogues
-
-  def join("dialogue:" <> room_id, payload, socket) do
-    IO.inspect(room_id, label: "Topic")
-    {:ok, socket}
-  end
+  alias Chatserver.Messages
+  alias Chatserver.Messages.Message
 
   def join("main", _params, socket) do
     case Phoenix.PubSub.subscribe(Chatserver.PubSub, "main:#{socket.assigns.current_user.id}") do
@@ -22,7 +19,7 @@ defmodule ChatserverWeb.MainChannel do
     end
   end
 
-  def handle_in("ping", payload, socket) do
+  def handle_in("ping", _payload, socket) do
     push(socket, "pong", %{timestamp: DateTime.utc_now()})
     {:noreply, socket}
   end
@@ -43,14 +40,17 @@ defmodule ChatserverWeb.MainChannel do
           true ->
             push(socket, "ALREADY EXISTS", %{timestamp: DateTime.utc_now()})
             {:noreply, socket}
+
           false ->
             with {:ok, %Dialogue{} = dialogue} <-
                    Dialogues.create_dialogue(%{"user1_id" => user1_id, "user2_id" => user2_id}) do
               push(socket, "CREATED", %{
                 timestamp: DateTime.utc_now(),
                 user1_id: user1_id,
-                user2_id: user2_id
+                user2_id: user2_id,
+                dialogue_id: dialogue.id
               })
+
               {:noreply, socket}
             end
         end

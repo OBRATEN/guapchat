@@ -50,9 +50,12 @@ defmodule Chatserver.Messages do
 
   """
   def create_message(attrs \\ %{}) do
-    %Message{}
+    changeset = %Message{}
     |> Message.changeset(attrs)
-    |> Repo.insert()
+    case Repo.insert(changeset) do
+      {:ok, message} -> {:ok, message}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
