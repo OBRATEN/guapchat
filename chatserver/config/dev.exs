@@ -30,6 +30,10 @@ config :chatserver, ChatserverWeb.Endpoint,
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:chatserver, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:chatserver, ~w(--watch)]}
+  ],
+  wss: [
+    keyfile: System.get_env("HTTPS_KEYFILE"),  # Путь к вашему приватному ключу
+    certfile: System.get_env("HTTPS_CERTFILE")
   ]
 
 # ## SSL Support

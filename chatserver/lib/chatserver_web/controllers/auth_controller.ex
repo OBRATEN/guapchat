@@ -7,6 +7,24 @@ defmodule ChatserverWeb.AuthController do
   alias Bcrypt, as: Bcrypt
   require Logger
 
+  plug :allow_cors
+
+  defp allow_cors(conn, _opts) do
+    conn
+    |> put_resp_header("access-control-allow-origin", "*") #  Разрешает все домены (не рекомендуется для production)
+    |> put_resp_header("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS")
+    |> put_resp_header("access-control-allow-headers", "content-type, authorization")
+    |> maybe_halt()
+  end
+
+  defp maybe_halt(%{method: "OPTIONS"} = conn) do
+    conn
+    |> send_resp(204, "")  #  Ответ No Content для OPTIONS запросов
+    |> halt()
+  end
+
+  defp maybe_halt(conn), do: conn
+
   @users %{"test" => "password"}
 
   def refresh(conn, %{"token" => refresh_token}) do
@@ -136,6 +154,20 @@ defmodule ChatserverWeb.AuthController do
           |> put_resp_header("content-type", "application/json")
           |> send_resp(500, Jason.encode!(%{errors: [reason]}))
       end
+    else
+      {:error, _changeset} ->
+        conn
+          |> put_status(401)
+          |> put_resp_header("content-type", "application/json")
+          |> send_resp(401, "User already exists")
     end
+  end
+
+  def options(conn, _params) do
+    conn
+    |> put_resp_header("access-control-allow-origin", "*") # Или конкретный домен
+    |> put_resp_header("access-control-allow-methods", "GET, POST, OPTIONS, PUT, DELETE")
+    |> put_resp_header("access-control-allow-headers", "content-type, authorization")
+    |> send_resp(204, "")
   end
 end

@@ -12,7 +12,7 @@ JSON BODY:
     }
 }
 Response:
-OK, Refresh JWT-Token
+:ok, {Access_JWT, Refresh_JWT}
 
 LOGIN
 POST http://31.129.105.229:4444/api/login
@@ -26,33 +26,52 @@ JSON BODY:
     }
 }
 Response:
-OK, Refresh JWT-Token
+:ok, {Access_JWT, Refresh_JWT}
 
 REFRESH TOKEN
-POST http://31.129.105.229:4444/api/refresh
-Authorization: Bearer Token, Refresh JWT-Token
+POST http://31.129.105.229:4444/api/refresh?token=<REFRESH_TOKEN>
+No-Authorization
 No-Body
 Response:
-OK, Access JWT-Token
+:ok, {Access_JWT, Refresh_JWT}
 
 SOCKET CONNECTION
 WS ws://31.129.105.229:4444/socket/websocket
-Params: token, Access JWT-Token
+Params: token, Access_JWT
 Response:
-OK, Connected to WS
+:ok, Connected to WS
 
 WS TOPICS:
-TOPIC chat_room:<chatid>
-Params: token, Access JWT-Token
-Body:
-{"topic":"chat_room:<chatid>","event":"phx_join","payload":{},"ref":<ref>}
 
-TOPIC chat_room:<chatid>
-Params: token, Access JWT-Token
+TOPIC main:<user_id>
+Params: token: Access JWT-Token
 Body:
-{"topic":"chat_room:<chatid>","event":"new_msg","payload":{"body": "<message>"},"ref":<ref>}
+{"topic":"main:<user_id>","event":"phx_join","payload":{}, "ref":<ref>}
+Response
+:ok, Joined topic main#user_id
 
-TOPIC info:<user>
-Params: token, Access JWT-Token
+TOPIC main:<user_id>
+Params: token: Access JWT-Token
 Body:
-{"topic":"info:<user>","event":"to_dialogue","payload":{"body": {"<user1>", "<user2>"}},"ref":<ref>}
+{"topic":"main:<user_id>","event":"ping","payload":{}, "ref":<ref>}
+Response:
+Pong
+
+TOPIC main:<user_id>
+Params: token: Access JWT-Token
+Body:
+{"topic":"main:<user_id>","event":"new_dialogue","payload":{"username": <username>}, "ref":<ref>}
+Response:
+:ok, Dialogue created
+
+TOPIC dialogue:<dialogue_id>
+Params: token: Access JWT-Token
+Body:
+{"topic":"dialogue:<dialogue_id>","event":"phx_join","payload":{}, "ref":<ref>}
+Response:
+:ok, Joined topic dialogue#dialogue_id
+
+TOPIC dialogue:<dialogue_id>
+Params: token: Access JWT-Token
+Body:
+{"topic":"dialogue:<dialogue_id>","event":"new_message","payload":{"body": {"dialogue_id": dialogue_id, "content": content}}, "ref":<ref>}
