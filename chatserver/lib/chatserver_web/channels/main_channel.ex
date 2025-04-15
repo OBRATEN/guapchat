@@ -24,6 +24,19 @@ defmodule ChatserverWeb.MainChannel do
     {:noreply, socket}
   end
 
+  def handle_in("search_user", %{"username" => username}, socket) do
+    case Accounts.get_similar_users(username) do
+      nil ->
+        push(socket, "SIMILAR_USERS_NOT_FOUND", %{timestamp: DateTime.utc_now()})
+        {:noreply, socket}
+
+      users ->
+        usernames = Enum.map(users, fn user -> user.username end)
+        push(socket, "SIMILAR_USERS", %{usernames: usernames})
+        {:noreply, socket}
+    end
+  end
+
   # BODY: {"username"}
   def handle_in("new_dialogue", %{"username" => username}, socket) do
     user1_id = socket.assigns.current_user.id
@@ -54,6 +67,57 @@ defmodule ChatserverWeb.MainChannel do
               {:noreply, socket}
             end
         end
+    end
+  end
+
+  def handle_in("get_dialogues", %{"count" => count}, socket) do
+    case count > 0 do
+      true ->
+        user1_id = socket.assigns.current_user.id
+
+        case Dialogues.get_last_dialogues(count) do
+          [] ->
+            push(socket, "DATA ERROR", %{timestamp: DateTime.utc_now()})
+            {:noreply, socket}
+
+          dialogues ->
+            dialogues_for_json =
+              Enum.map(dialogues, fn dialogue ->
+                last_message = "No messages yet"
+                last_message_date = ""
+                username2 = Accounts.get_user_by_id(dialogue.user2_id).username
+
+                case Messages.last_message() do
+                  nil ->
+                    last_message = "No messages yet"
+
+                  message ->
+                    last_message = message.content
+                    last_message_date = message.inserted_at
+                end
+
+                %{
+                  id: dialogue.id,
+                  user2_id: dialogue.user2_id,
+                  username2: username2,
+                  last_message: last_message,
+                  last_message_date: last_message_date
+                }
+              end)
+
+            json_dialogues = Jason.encode!(dialogues_for_json)
+
+            push(socket, "GET_DIALOGUES_LIST", %{
+              timestamp: DateTime.utc_now(),
+              dialogues: json_dialogues
+            })
+
+            {:noreply, socket}
+        end
+
+      false ->
+        push(socket, "DIA COUNT ERROR", %{timestamp: DateTime.utc_now()})
+        {:noreply, socket}
     end
   end
 

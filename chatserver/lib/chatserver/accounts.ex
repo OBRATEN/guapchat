@@ -140,6 +140,16 @@ defmodule Chatserver.Accounts do
     end
   end
 
+  # username String, %{User} out
+  def get_similar_users(username) do
+    pattern = "%#{username}%"
+    query =
+      from u in User,
+        where: ilike(u.username, ^pattern),
+        select: u
+    Repo.all(query)
+  end
+
   def get_user_id_by_username(username) do
     User
     |> where([u], u.username == ^username)

@@ -83,7 +83,8 @@ class HttpClient {
         // Успешный запрос: декодируем JSON, если он есть
         if (response.body.isNotEmpty) {
           try {
-            return jsonDecode(response.body);
+            Map<String, dynamic> body = jsonDecode(response.body);
+            return body;
           } catch (e) {
             // Если не удалось декодировать JSON, возвращаем тело как есть (например, строка)
             print('Ошибка декодирования JSON: $e');

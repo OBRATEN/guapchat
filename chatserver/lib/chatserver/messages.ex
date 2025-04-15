@@ -4,6 +4,7 @@ defmodule Chatserver.Messages do
   """
 
   import Ecto.Query, warn: false
+  alias Chatserver.Messages
   alias Chatserver.Repo
 
   alias Chatserver.Messages.Message
@@ -90,6 +91,26 @@ defmodule Chatserver.Messages do
   """
   def delete_message(%Message{} = message) do
     Repo.delete(message)
+  end
+
+  def last_message() do
+    Repo.one(
+      from m in Message,
+        order_by: [desc: m.inserted_at],
+        limit: 1
+    )
+  end
+
+  def get_last_messages(count, chat_id) do
+    Message
+    |> where([m], m.chat_id == ^chat_id)
+    |> order_by(desc: :inserted_at)
+    |> limit(^count)
+    |> Repo.all()
+  end
+
+  def get_dialogue!(id) do
+    Repo.get!(Dialogue, id)
   end
 
   @doc """

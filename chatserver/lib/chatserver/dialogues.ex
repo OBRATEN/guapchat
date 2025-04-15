@@ -7,6 +7,13 @@ defmodule Chatserver.Dialogues do
     Repo.all(Dialogue)
   end
 
+  def get_last_dialogues(count) do
+    Dialogue
+    |> order_by(desc: :inserted_at)
+    |> limit(^count)
+    |> Repo.all()
+  end
+
   def get_dialogue!(id) do
     Repo.get!(Dialogue, id)
   end

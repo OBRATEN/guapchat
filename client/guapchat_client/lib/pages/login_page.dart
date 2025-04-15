@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:guapchat_client/pages/dialogues_page.dart';
 import 'package:guapchat_client/pages/messenger_page.dart';
 import 'package:guapchat_client/utils/http_client.dart';
 import 'registration_page.dart';
+import 'package:guapchat_client/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -88,7 +88,9 @@ class _LoginPageState extends State<LoginPage> {
                         body: postData,
                         headers: headers,
                       );
-                      print('POST response: $postResponse');
+                      globals.access_token = postResponse["access_token"];
+                      globals.refresh_token = postResponse["refresh_token"];
+                      globals.isLoggedIn = true;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
