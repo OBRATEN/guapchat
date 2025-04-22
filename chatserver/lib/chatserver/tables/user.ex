@@ -1,4 +1,4 @@
-defmodule Chatserver.Accounts.User do
+defmodule Chatserver.Tables.User do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -8,6 +8,7 @@ defmodule Chatserver.Accounts.User do
     field :password_hash, :string
     field :firstname, :string
     field :lastname, :string
+    many_to_many :chats, Chatserver.Tables.Chat, join_through: "chats_users"
     timestamps(type: :utc_datetime)
   end
 

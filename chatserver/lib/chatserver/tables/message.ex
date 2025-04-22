@@ -1,9 +1,9 @@
-defmodule Chatserver.Messages.Message do
+defmodule Chatserver.Tables.Message do
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "messages" do
-    field :dialogue_id, :integer
+    field :chat_id, :integer
     field :sender_id, :integer
     field :content, :string
     field :is_read, :boolean, default: false

@@ -1,0 +1,69 @@
+{
+    HTTP: {
+        REGISTRATION: {
+            Request: {
+                Request-type: POST,
+                Endpoint: http://localhost:4444/api/register,
+                Content-type: Application/JSON,
+                Authorization: None,
+                Body: {
+                    user: {
+                        username: <USERNAME>,
+                        password: <PASSWORD>,
+                        firstname: <FIRSTNAME>,
+                        lastname: <LASTNAME>
+                    }
+                }
+            },
+            Response: {
+                access_token: <TOKEN>,
+                refresh_token: <TOKEN>,
+                token_type: bearer,
+                user: {
+                    id: <ID>,
+                    username: <USERNAME>
+                }
+            }
+        },
+
+
+
+        AUTHORIZATION: {
+            Request: {
+                Request-type: POST,
+                Endpoint: http://localhost:4444/api/login,
+                Content-type: Application/JSON,
+                Authorization: None,
+                Body: {
+                    user: {
+                        username: <USERNAME>,
+                        password: <PASSWORD>
+                    }
+                }
+            },
+            Response: {
+                access_token: <TOKEN>,
+                refresh_token: <TOKEN>,
+                token_type: bearer,
+                user: {
+                    id: <ID>,
+                    username: <USERNAME>
+                }
+            }
+        }
+    },
+
+    
+
+    WS: {
+        JOIN: {
+            Request: {
+                Endpoint: ws://localhost:4444/socket/websocket?token=<TOKEN>,
+                Message: {"topic":"main","event":"phx_join","payload":{},"ref":1},
+            },
+            Response: {
+                Message: Connected to ws://localhost:4444/socket/websocket?token=<TOKEN>
+            }
+        }
+    }
+}

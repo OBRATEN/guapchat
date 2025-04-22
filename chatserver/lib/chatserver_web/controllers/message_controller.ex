@@ -1,8 +1,8 @@
 defmodule ChatserverWeb.MessageController do
   use ChatserverWeb, :controller
 
-  alias Chatserver.Messages
-  alias Chatserver.Messages.Message
+  alias Chatserver.Repos.MessageRepo
+  alias Chatserver.Tables.Message
 
   action_fallback ChatserverWeb.FallbackController
 

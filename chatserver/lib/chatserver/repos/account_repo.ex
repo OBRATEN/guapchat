@@ -1,8 +1,8 @@
-defmodule Chatserver.Accounts do
+defmodule Chatserver.Repos.AccountRepo do
   alias Bcrypt, as: Bcrypt
   import Ecto.Query, warn: false
   alias Chatserver.Repo
-  alias Chatserver.Accounts.User
+  alias Chatserver.Tables.User
   require Logger
 
   @doc """
