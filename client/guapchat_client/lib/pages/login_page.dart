@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guapchat_client/pages/messenger_page.dart';
-import 'package:guapchat_client/utils/http_client.dart';
+import 'package:guapchat_client/core/http_client.dart';
 import 'registration_page.dart';
 import 'package:guapchat_client/globals.dart' as globals;
 
@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // Form key for managing form state
   final _formKey = GlobalKey<FormState>();
-  HttpClient httpClient = HttpClient(baseUrl: "http://localhost:4444");
+  CustomHttpClient httpClient = CustomHttpClient(baseUrl: "http://localhost:4444");
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

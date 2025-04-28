@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guapchat_client/utils/http_client.dart';
+import 'package:guapchat_client/core/http_client.dart';
 import 'login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -12,7 +12,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String _username = '';
   String _fio = '';
   String _password = '';
-  HttpClient httpClient = HttpClient(baseUrl: "http://localhost:4444");
+  CustomHttpClient httpClient = CustomHttpClient(baseUrl: "http://localhost:4444");
 
   @override
   Widget build(BuildContext context) {

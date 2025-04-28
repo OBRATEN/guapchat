@@ -1,4 +1,5 @@
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:convert';
 
 class WebSocketClient {
   late final WebSocketChannel _channel;
@@ -41,19 +42,18 @@ class WebSocketClient {
     }
   }
 
-  /// Send a message to the WebSocket server
-  void sendMessage(String message) {
+/// Геттер для потока данных
+  Stream get stream => _channel.stream;
+  
+/// Отправка сообщения
+  void send(dynamic data) {
     if (_channel.sink != null) {
-      _channel.sink.add(message);
-    } else {
-      if (onError != null) {
-        onError!("WebSocket sink is not available");
-      }
+      _channel.sink.add(jsonEncode(data)); // Преобразование в JSON-строку
     }
   }
 
-  /// Close the WebSocket connection
-  void close() {
+  /// Закрытие соединения
+  void disconnect() {
     _channel.sink.close();
   }
 }

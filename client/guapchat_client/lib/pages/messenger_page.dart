@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'chat_interface.dart';
-import 'package:guapchat_client/utils/ws_client.dart';
+import 'package:guapchat_client/core/ws_client.dart';
 import 'dart:convert';
 import 'package:guapchat_client/globals.dart' as globals;
 import 'package:guapchat_client/entity/dialogue.dart';
@@ -81,10 +81,10 @@ class _MessengerPageState extends State<MessengerPage> {
         print("Failed to parse message: $e");
       }
     };
-    _webSocketClient.sendMessage(
+    _webSocketClient.send(
       '{"topic":"main","event":"phx_join","payload":{},"ref":1}',
     );
-    _webSocketClient.sendMessage(
+    _webSocketClient.send(
       '{"topic":"main","event":"get_dialogues","payload":{"count": 7},"ref":6}',
     );
   }
@@ -119,7 +119,7 @@ class _MessengerPageState extends State<MessengerPage> {
                     ),
                     onChanged: (query) {
                       if (query.isNotEmpty) {
-                        _webSocketClient.sendMessage(
+                        _webSocketClient.send(
                           '{"topic":"main","event":"search_user","payload":{"username":"$query"},"ref":1}',
                         );
                       } else {
