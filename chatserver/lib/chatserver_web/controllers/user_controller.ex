@@ -1,8 +1,8 @@
 defmodule ChatserverWeb.UserController do
   use ChatserverWeb, :controller
 
-  alias Chatserver.Accounts
-  alias Chatserver.Accounts.User
+  alias Chatserver.Repos.AccountRepo
+  alias Chatserver.Tables.User
 
   action_fallback ChatserverWeb.FallbackController
 

@@ -1,4 +1,4 @@
-defmodule Chatserver.Dialogue.Dialogue do
+defmodule Chatserver.Tables.Dialogue do
   use Ecto.Schema
   import Ecto.Changeset
 

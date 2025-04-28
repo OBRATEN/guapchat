@@ -1,7 +1,7 @@
-defmodule Chatserver.Dialogues do
+defmodule Chatserver.Repos.DialogueRepo do
   import Ecto.Query, warn: false
   alias Chatserver.Repo
-  alias Chatserver.Dialogue.Dialogue
+  alias Chatserver.Tables.Dialogue
 
   def list_dialogues do
     Repo.all(Dialogue)

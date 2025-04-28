@@ -2,8 +2,8 @@ defmodule ChatserverWeb.AuthController do
   use ChatserverWeb, :controller
   alias ElixirSense.Log
   alias Chatserver.Auth
-  alias Chatserver.Accounts
-  alias Chatserver.Accounts.User
+  alias Chatserver.Repos.AccountRepo
+  alias Chatserver.Tables.User
   alias Bcrypt, as: Bcrypt
   require Logger
 
@@ -44,7 +44,7 @@ defmodule ChatserverWeb.AuthController do
               "token_type" => "bearer",
               "user" => %{
                 "id" => user_id,
-                "username" => Accounts.get_user_by_id(user_id).username
+                "username" => AccountRepo.get_user_by_id(user_id).username
               }
             }
 
@@ -74,7 +74,7 @@ defmodule ChatserverWeb.AuthController do
     password = Map.get(user_params, "password")
     IO.inspect(username, label: "username")
 
-    case Accounts.get_user_by_username(username) do
+    case AccountRepo.get_user_by_username(username) do
       nil ->
         conn
         |> put_status(401)
@@ -83,7 +83,7 @@ defmodule ChatserverWeb.AuthController do
         |> halt()
 
       user ->
-        case Accounts.check_password(username, password) do
+        case AccountRepo.check_password(username, password) do
           {:ok} ->
             claims = %{
               "user_id" => user.id
@@ -124,8 +124,8 @@ defmodule ChatserverWeb.AuthController do
   end
 
   def register(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
-      user_id = Accounts.get_user_id_by_username(user.username) |> elem(1)
+    with {:ok, %User{} = user} <- AccountRepo.create_user(user_params) do
+      user_id = AccountRepo.get_user_id_by_username(user.username) |> elem(1)
 
       claims = %{
         "user_id" => user_id

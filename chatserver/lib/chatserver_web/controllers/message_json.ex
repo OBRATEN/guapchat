@@ -1,5 +1,5 @@
 defmodule ChatserverWeb.MessageJSON do
-  alias Chatserver.Messages.Message
+  alias Chatserver.Tables.Message
 
   @doc """
   Renders a list of messages.

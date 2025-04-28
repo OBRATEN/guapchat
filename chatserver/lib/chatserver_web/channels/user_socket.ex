@@ -1,8 +1,8 @@
 defmodule ChatserverWeb.UserSocket do
   use Phoenix.Socket
   alias Chatserver.Auth
-  alias Chatserver.Accounts.User
-  alias Chatserver.Accounts
+  alias Chatserver.Tables.User
+  alias Chatserver.Repos.AccountRepo
   require Logger
 
   channel "dialogue:*", ChatserverWeb.DialogueChannel
@@ -14,7 +14,7 @@ defmodule ChatserverWeb.UserSocket do
         user_id = Map.get(payload, "user_id")
         Logger.info(user_id)
 
-        case Accounts.get_user_by_id(user_id) do
+        case AccountRepo.get_user_by_id(user_id) do
           %User{} = user ->
             # Assign the user to the socket for later use in channels
             {:ok, assign(socket, :current_user, user)}

@@ -1,13 +1,13 @@
 defmodule ChatserverWeb.DialogueChannel do
   use ChatserverWeb, :channel
-  alias Chatserver.Dialogue.Dialogue
-  alias Chatserver.Accounts
-  alias Chatserver.Dialogues
-  alias Chatserver.Messages
-  alias Chatserver.Messages.Message
+  alias Chatserver.Tables.Dialogue
+  alias Chatserver.Repos.AccountRepo
+  alias Chatserver.Repos.DialogueRepo
+  alias Chatserver.Repos.MessageRepo
+  alias Chatserver.Tables.Message
 
   def join("dialogue:" <> room_id, payload, socket) do
-    case Dialogues.get_dialogue!(room_id) do
+    case DialogueRepo.get_dialogue!(room_id) do
       nil ->
         {:error, :join_failed}
 
@@ -35,14 +35,14 @@ defmodule ChatserverWeb.DialogueChannel do
   def handle_in("new_message", %{"dialogue_id" => dialogue_id, "content" => content}, socket) do
     user_id = socket.assigns.current_user.id
 
-    case Dialogues.get_dialogue!(dialogue_id) do
+    case DialogueRepo.get_dialogue!(dialogue_id) do
       nil ->
         push(socket, "NOT_CREATED", %{timestamp: DateTime.utc_now()})
         {:noreply, socket}
 
       dialogue ->
         with {:ok, %Message{} = message} <-
-               Messages.create_message(%{
+               MessageRepo.create_message(%{
                  "dialogue_id" => dialogue_id,
                  "sender_id" => user_id,
                  "content" => content,

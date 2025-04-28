@@ -1,8 +1,8 @@
 defmodule ChatserverWeb.DialogueController do
   use ChatserverWeb, :controller
 
-  alias Chatserver.Dialogue
-  alias Chatserver.Dialogue.Dialogue
+  alias Chatserver.Repos.DialogueRepo
+  alias Chatserver.Tables.Dialogue
 
   def new(conn, _params) do
     changeset = Dialogue.changeset(%Dialogue{})

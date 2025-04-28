@@ -1,13 +1,12 @@
-defmodule Chatserver.Messages do
+defmodule Chatserver.Repos.MessageRepo do
   @moduledoc """
   The Messages context.
   """
 
   import Ecto.Query, warn: false
-  alias Chatserver.Messages
   alias Chatserver.Repo
 
-  alias Chatserver.Messages.Message
+  alias Chatserver.Tables.Message
 
   @doc """
   Returns the list of messages.
@@ -109,8 +108,20 @@ defmodule Chatserver.Messages do
     |> Repo.all()
   end
 
-  def get_dialogue!(id) do
-    Repo.get!(Dialogue, id)
+  def get_last_message(chat_id) do
+    Chatserver.Tables.Message
+    |> where([m], m.chat_id == ^chat_id)
+    |> order_by([m], desc: m.inserted_at) # Сортировка по убыванию даты создания
+    |> limit(1)                          # Ограничение на одно сообщение
+    |> Repo.one()                        # Возвращаем одно сообщение или nil
+  end
+
+  def get_messages(chat_id, count) do
+    Chatserver.Tables.Message
+    |> where([m], m.chat_id == ^chat_id)
+    |> order_by([m], desc: m.inserted_at) # Сортировка по убыванию даты создания
+    |> limit(^count)                          # Ограничение на одно сообщение
+    |> Repo.all()
   end
 
   @doc """
